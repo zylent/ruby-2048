@@ -1,4 +1,5 @@
 #ruby 2048, for fun and to learn ruby better
+require 'io/console'
 
 grid = [ [1, 0, 0, 1], [0, 2, 0, 0], [0, 0, 0, 3], [1, 0, 0, 0] ]
 
@@ -32,16 +33,6 @@ def spawn(grid)
 	end
 end
 
-#broken ignore
-def moveleft(grid)
-	grid.each do |x|
-		x.each do |y|
-			print grid[y][x]
-		end
-	end
-
-end
-
 def moveright(grid, dir)
 	done = false
 	diry = 0
@@ -59,13 +50,30 @@ def moveright(grid, dir)
 
 for y in 0..3 do
 	for x in 0..3 do
-		#this doesn't work, research how to do this in ruby
-		if ( 0 <= y <= 3 && 0 <= x <= 3) && grid[y+diry][x+dirx] = 0
-			puts "ok"
-
+		
+		if ( y.between?(0, 3) && x.between?(0, 3) ) && grid[y+diry][x+dirx] == 0 && grid[y][x] != 0
+			#puts "ok"
+			grid[y+diry][x+dirx] = grid[y][x]
+			grid[y][x] = 0
 		end
 	end
 end
+end
+
+def read_char
+	STDIN.echo = false
+	STDIN.raw!
+
+	input = STDIN.getc.chr
+	if input == "\e" then
+		input << STDIN.read_nonblock(3) rescue nil
+		input << STDIN.read_nonblock(2) rescue nil
+	end
+ensure
+	STDIN.echo = true
+	STDIN.cooked!
+
+	return input
 end
 
 
@@ -74,11 +82,10 @@ display(grid)
 spawn(grid)
 puts ""
 display(grid)
-#moveright(grid, dir)
+moveright(grid, dir)
 puts ""
 display(grid)
-
-
+print read_char
 
 
 
