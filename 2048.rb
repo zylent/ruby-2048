@@ -96,16 +96,39 @@ def read_char
 		return input
 end
 
+def wait_input
+	 c = read_char
+ 
+  case c
+  when "\e"
+    puts "ESCAPE"
+    exit 0
+  when "\e[A"
+    puts "UP ARROW"
+  when "\e[B"
+    puts "DOWN ARROW"
+  when "\e[C"
+    puts "RIGHT ARROW"
+    return true
+  when "\e[D"
+    puts "LEFT ARROW"
+  when /^.$/
+    puts "SINGLE CHAR HIT: #{c.inspect}"
+  else
+    puts "SOMETHING ELSE: #{c.inspect}"
+  end
+end
 
 dir = "right"
 display(grid)
 spawn(grid)
 puts ""
 display(grid)
-moveright(grid, dir)
 puts ""
-display(grid)
-print read_char
 
+if wait_input
+	moveright(grid, dir)
+	display(grid)
+end
 
 
